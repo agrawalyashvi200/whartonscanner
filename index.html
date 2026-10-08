@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Professional Multi-Market TradingView Lightweight Charts platform with 50 EMA, 200 EMA, and 1-Year Rolling VWAP for Global Equities, Indian NSE/BSE, Crypto, Forex, and Commodities." />
+  <meta name="keywords" content="TradingView charts, lightweight-charts, 50 EMA, 200 EMA, 1 year rolling vwap, stock charts, crypto charts, nse charts" />
+  <title>Apex Charts | Professional Multi-Market Terminal (50 EMA • 200 EMA • 1Y VWAP)</title>
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Top Navigation Bar -->
+    <header class="top-nav" role="banner">
+      <div class="nav-left">
+        <div class="brand-badge" id="btn-brand-home">
+          <div class="brand-logo-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          </div>
+          <span class="brand-title">APEX LIGHT</span>
+          <span class="brand-tag">PRO</span>
+        </div>
+
+        <!-- Global Search Trigger Pill -->
+        <button class="search-trigger-btn" id="btn-search-trigger" title="Search all markets (Ctrl+K)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span id="search-trigger-label">Search stocks, crypto, forex, indices...</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+      </div>
+
+      <!-- Navigation Center: Timeframe & Indicators -->
+      <div class="nav-center">
+        <!-- Timeframe Segmented Control (Daily default, Weekly, Monthly) -->
+        <div class="timeframe-group" role="group" aria-label="Timeframe selection">
+          <button class="tf-btn active" data-tf="1D" id="tf-1d" title="Daily Timeframe (Default)">1D</button>
+          <button class="tf-btn" data-tf="1W" id="tf-1w" title="Weekly Timeframe">1W</button>
+          <button class="tf-btn" data-tf="1M" id="tf-1m" title="Monthly Timeframe">1M</button>
+        </div>
+
+        <!-- Indicator Toggle Badges -->
+        <div class="indicators-toolbar" role="group" aria-label="Indicator toggles">
+          <!-- Trend Overlays Group -->
+          <button class="ind-pill ema50 active" id="btn-toggle-ema50" title="Toggle 50 Exponential Moving Average">
+            <span class="ind-dot ema50"></span>
+            <span>50 EMA</span>
+            <span class="ind-toggle-icon" id="icon-ema50-state"></span>
+          </button>
+
+          <button class="ind-pill ema200 active" id="btn-toggle-ema200" title="Toggle 200 Exponential Moving Average">
+            <span class="ind-dot ema200"></span>
+            <span>200 EMA</span>
+            <span class="ind-toggle-icon" id="icon-ema200-state"></span>
+          </button>
+
+          <button class="ind-pill vwap active" id="btn-toggle-vwap" title="Toggle 1-Year Rolling Volume-Weighted Average Price">
+            <span class="ind-dot vwap"></span>
+            <span>1Y VWAP</span>
+            <span class="ind-toggle-icon" id="icon-vwap-state"></span>
+          </button>
+
+          <div class="toolbar-divider" title="Oscillators"></div>
+
+          <!-- Oscillators Sub-Pane Group -->
+          <button class="ind-pill rsi active" id="btn-toggle-rsi" title="Toggle Relative Strength Index (14)">
+            <span class="ind-dot rsi"></span>
+            <span>RSI</span>
+            <span class="ind-toggle-icon" id="icon-rsi-state"></span>
+          </button>
+
+          <button class="ind-pill adx active" id="btn-toggle-adx" title="Toggle Average Directional Index (14)">
+            <span class="ind-dot adx"></span>
+            <span>ADX</span>
+            <span class="ind-toggle-icon" id="icon-adx-state"></span>
+          </button>
+
+          <button class="ind-pill mfi active" id="btn-toggle-mfi" title="Toggle Money Flow Index (14)">
+            <span class="ind-dot mfi"></span>
+            <span>MFI</span>
+            <span class="ind-toggle-icon" id="icon-mfi-state"></span>
+          </button>
+
+          <button class="ind-pill msi active" id="btn-toggle-msi" title="Toggle Market Strength Indicator (Momentum & Vol Flow)">
+            <span class="ind-dot msi"></span>
+            <span>MSI</span>
+            <span class="ind-toggle-icon" id="icon-msi-state"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Right: Utilities & Style -->
+      <div class="nav-right">
+        <!-- Oscillator Mode Toggle -->
+        <button class="pill-btn osc-mode-btn" id="btn-osc-mode" title="Switch Indicator Layout (On Candlesticks vs Sub-Panes)">
+          <span class="osc-mode-icon">◫</span>
+          <span id="osc-mode-text">On Candles</span>
+        </button>
+
+        <!-- Chart Type Select -->
+        <select class="chart-type-select" id="chart-type-select" title="Change Chart Type">
+          <option value="candlestick" selected>Candles</option>
+          <option value="line">Line</option>
+          <option value="area">Area</option>
+        </select>
+
+        <!-- Indicator Info / Education Modal -->
+        <button class="icon-btn" id="btn-indicator-info" title="Technical Indicator Strategy Guide" aria-label="Indicator info">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        </button>
+
+        <!-- Fit Chart -->
+        <button class="icon-btn" id="btn-fit-chart" title="Reset View / Fit Content" aria-label="Fit chart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </button>
+
+        <!-- Screenshot Download -->
+        <button class="icon-btn" id="btn-screenshot" title="Save Chart Image" aria-label="Download chart screenshot">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+        </button>
+
+        <!-- Toggle Watchlist Sidebar -->
+        <button class="icon-btn" id="btn-toggle-watchlist" title="Toggle Watchlist Sidebar" aria-label="Toggle watchlist">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M15 3v18"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Market Overview Header Strip -->
+    <section class="market-strip" aria-label="Active market details">
+      <div class="market-info-primary">
+        <div class="symbol-name-wrap">
+          <h1 class="symbol-ticker" id="strip-symbol">BTC-USD</h1>
+          <span class="market-badge crypto" id="strip-badge">CRYPTO</span>
+          <span class="symbol-fullname" id="strip-name">Bitcoin</span>
+        </div>
+
+        <div class="price-display-wrap">
+          <span class="current-price" id="strip-price">$66,420.00</span>
+          <span class="change-pill bullish" id="strip-change">+2.45% (+$1,580.00)</span>
+        </div>
+      </div>
+
+      <div class="market-stats-row">
+        <div class="stat-item">
+          <span class="stat-label">24h High</span>
+          <span class="stat-val" id="strip-high">$66,950.00</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">24h Low</span>
+          <span class="stat-val" id="strip-low">$64,810.00</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Volume</span>
+          <span class="stat-val" id="strip-volume">28.4K BTC</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Signal</span>
+          <div class="signal-chip bullish" id="strip-signal">● Analyzing signals...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Workspace: Chart Canvas + HUD + Sidebar -->
+    <main class="workspace-layout">
+      <!-- Chart Canvas Viewport -->
+      <div class="chart-viewport" id="chart-viewport">
+        <!-- Floating HUD / Legend -->
+        <div class="chart-hud" id="chart-hud">
+          <div class="hud-row-primary">
+            <span class="hud-time" id="hud-date">---</span>
+            <div class="hud-ohlc">
+              <span>O: <b id="hud-open">---</b></span>
+              <span>H: <b id="hud-high">---</b></span>
+              <span>L: <b id="hud-low">---</b></span>
+              <span>C: <b id="hud-close">---</b></span>
+              <span>Vol: <b id="hud-volume">---</b></span>
+            </div>
+          </div>
+          <div class="hud-row-indicators">
+            <span class="hud-ind-item ema50">● 50 EMA: <b id="hud-ema50">---</b></span>
+            <span class="hud-ind-item ema200">● 200 EMA: <b id="hud-ema200">---</b></span>
+            <span class="hud-ind-item vwap">● 1Y VWAP: <b id="hud-vwap">---</b></span>
+          </div>
+          <div class="hud-row-oscillators" id="hud-row-oscillators">
+            <span class="hud-ind-item rsi" id="hud-item-rsi">● RSI: <b id="hud-rsi">---</b></span>
+            <span class="hud-ind-item adx" id="hud-item-adx">● ADX: <b id="hud-adx">---</b> <span class="hud-sub" id="hud-adx-di"></span></span>
+            <span class="hud-ind-item mfi" id="hud-item-mfi">● MFI: <b id="hud-mfi">---</b></span>
+            <span class="hud-ind-item msi" id="hud-item-msi">● MSI: <b id="hud-msi">---</b></span>
+          </div>
+        </div>
+
+        <!-- TradingView Chart Container -->
+        <div id="chart-container"></div>
+
+        <!-- Loading Indicator -->
+        <div class="chart-loader" id="chart-loader" style="display: none;">
+          <div class="spinner"></div>
+          <span id="loader-msg">Loading chart & calculating indicators...</span>
+        </div>
+      </div>
+
+      <!-- Quick Watchlist Sidebar -->
+      <aside class="watchlist-sidebar" id="watchlist-sidebar">
+        <div class="watchlist-header">
+          <h3>Market Watch</h3>
+          <span style="font-size: 11px; color: #64748b;">Instant Open</span>
+        </div>
+        <ul class="watchlist-list" id="watchlist-list">
+          <!-- Populated dynamically -->
+        </ul>
+      </aside>
+    </main>
+
+    <!-- Global Search Modal / Command Palette -->
+    <div class="search-modal-backdrop" id="search-modal" role="dialog" aria-modal="true" aria-labelledby="modal-search-title">
+      <div class="search-modal-box">
+        <div class="search-input-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input
+            type="text"
+            id="search-modal-input"
+            class="search-modal-input"
+            placeholder="Type any symbol or company name (e.g., Apple, AAPL, Reliance, BTC, Nifty, Gold)..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="icon-btn" id="btn-close-search" title="Close Search (Esc)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <!-- Filter Category Tabs -->
+        <div class="modal-category-tabs" id="modal-category-tabs">
+          <button class="cat-tab-btn active" data-cat="all">⭐ All Markets</button>
+          <button class="cat-tab-btn" data-cat="stocks">🇺🇸 US Equities</button>
+          <button class="cat-tab-btn" data-cat="indian">🇮🇳 Indian (NSE)</button>
+          <button class="cat-tab-btn" data-cat="crypto">⚡ Crypto</button>
+          <button class="cat-tab-btn" data-cat="forex">💱 Forex</button>
+          <button class="cat-tab-btn" data-cat="commodities">🪙 Commodities & Indices</button>
+        </div>
+
+        <!-- Search Results List -->
+        <ul class="search-results-list" id="search-results-list" role="listbox">
+          <!-- Populated dynamically -->
+        </ul>
+
+        <div class="search-modal-footer">
+          <div class="search-shortcuts">
+            <span><kbd>↑</kbd> <kbd>↓</kbd> Navigate</span>
+            <span><kbd>Enter</kbd> Open Chart</span>
+            <span><kbd>Esc</kbd> Close</span>
+          </div>
+          <span>Universal live market search</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Indicator Strategy Education Modal -->
+    <div class="info-modal-backdrop" id="info-modal" role="dialog" aria-modal="true">
+      <div class="info-modal-box">
+        <div class="info-modal-header">
+          <h2>Technical Indicators Architecture</h2>
+          <button class="icon-btn" id="btn-close-info">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <div class="info-cards">
+          <div class="info-card">
+            <h4 style="color: var(--color-ema50);">
+              <span class="ind-dot ema50"></span> 50 EMA (Exponential Moving Average)
+            </h4>
+            <p>
+              Measures medium-term momentum. Reacts faster to price action than simple moving averages. When price sustains above the 50 EMA, the market exhibits strong bullish intermediate trend momentum.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h4 style="color: var(--color-ema200);">
+              <span class="ind-dot ema200"></span> 200 EMA (Exponential Moving Average)
+            </h4>
+            <p>
+              The primary institutional baseline for major market cycles. A <strong>Golden Cross</strong> occurs when the 50 EMA crosses above the 200 EMA, confirming a long-term bull market. A <strong>Death Cross</strong> occurs when 50 EMA crosses below 200 EMA.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h4 style="color: var(--color-vwap);">
+              <span class="ind-dot vwap"></span> 1-Year Rolling VWAP (Volume-Weighted Average Price)
+            </h4>
+            <p>
+              Calculates the volume-weighted average price across a rolling 365 calendar days (trailing 252 trading sessions for daily charts, 52 weeks for weekly). Institutions and liquidity providers use 1-Year Rolling VWAP as their true cost basis benchmark and equilibrium value zone.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h4 style="color: var(--color-rsi, #818cf8);">
+              <span class="ind-dot rsi"></span> RSI (Relative Strength Index - 14)
+            </h4>
+            <p>
+              Welles Wilder's classic momentum oscillator evaluating the magnitude of recent price changes. Values above <strong>70</strong> indicate an overbought market with exhaustion risk; values below <strong>30</strong> indicate an oversold market ripe for mean reversion. The <strong>50 level</strong> defines the bull/bear momentum midline.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h4 style="color: var(--color-adx, #f59e0b);">
+              <span class="ind-dot adx"></span> ADX (Average Directional Index with +DI / -DI)
+            </h4>
+            <p>
+              Measures directional trend strength irrespective of price direction. When the ADX line rises above <strong>25</strong>, the asset is experiencing a strong, high-momentum trend. Directional bias is confirmed by the crossover of <strong>+DI</strong> (buyers leading) and <strong>-DI</strong> (sellers leading).
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h4 style="color: var(--color-mfi, #06b6d4);">
+              <span class="ind-dot mfi"></span> MFI (Money Flow Index - 14)
+            </h4>
+            <p>
+              A volume-weighted momentum oscillator ("Volume RSI") measuring institutional capital inflow and outflow. Overbought readings above <strong>80</strong> and oversold readings below <strong>20</strong> indicate extreme institutional accumulation or distribution exhaustion.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h4 style="color: var(--color-msi, #ec4899);">
+              <span class="ind-dot msi"></span> MSI (Market Strength Indicator)
+            </h4>
+            <p>
+              An advanced institutional composite oscillator evaluating price momentum normalized by True Range (ATR) and scaled by relative trading volume flow. A reading above <strong>75</strong> signals overwhelming bullish dominance, while readings below <strong>25</strong> reflect heavy institutional selling pressure.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Popup -->
+    <div class="toast-msg" id="toast-msg"></div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

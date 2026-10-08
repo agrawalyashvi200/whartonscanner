@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wharton Global Youth Competition: Interactive Formula-Based Investment Model</title>
+  <style>
+    :root {
+      --primary: #0b3954;
+      --secondary: #087e8b;
+      --success: #059669;
+      --bg-light: #f8fafc;
+      --border: #e2e8f0;
+      --text: #1e293b;
+    }
+    body {
+      font-family: 'Calibri', 'Arial', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.5;
+      color: var(--text);
+      max-width: 1320px;
+      margin: 20px auto;
+      padding: 0 24px;
+      background-color: #ffffff;
+    }
+    h1 {
+      color: var(--primary);
+      font-size: 22pt;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 6px;
+      margin-bottom: 6px;
+    }
+    h2 {
+      color: var(--secondary);
+      font-size: 15pt;
+      margin-top: 24px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 8.5pt;
+      font-weight: bold;
+    }
+    .badge-core { background: #d1fae5; color: #065f46; }
+    .badge-sat { background: #dbeafe; color: #1e40af; }
+    
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .panel {
+      background: var(--bg-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .panel h3 {
+      margin-top: 0;
+      color: var(--primary);
+      font-size: 12pt;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 9.5pt;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background-color: var(--primary);
+      color: #ffffff;
+      font-weight: 700;
+    }
+    tr:nth-child(even) { background-color: #f8fafc; }
+    tr:hover { background-color: #f1f5f9; }
+    
+    input[type="number"], select {
+      width: 100%;
+      padding: 5px 8px;
+      border: 1px solid #94a3b8;
+      border-radius: 4px;
+      font-size: 9pt;
+      background: #ffffff;
+      box-sizing: border-box;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    input[type="number"]:focus, select:focus {
+      outline: 2px solid var(--secondary);
+      border-color: var(--secondary);
+    }
+    
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .kpi-card {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+    }
+    .kpi-title {
+      font-size: 8.5pt;
+      color: #166534;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    .kpi-value {
+      font-size: 16pt;
+      color: #065f46;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+    
+    .callout {
+      background-color: #eff6ff;
+      border-left: 5px solid #2563eb;
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 9.5pt;
+    }
+    .formula-tag {
+      font-family: 'Consolas', 'Courier New', monospace;
+      background: #e2e8f0;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 8.5pt;
+      color: #0f172a;
+    }
+    .nowrap { white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+  <h1>Wharton Global Youth Competition: Interactive Formula-Based Investment Model</h1>
+  <p><strong>Client</strong>: Laura Gao | <strong>Principal Capital</strong>: $450,000 ($300k in 2027 + $150k in 2028) | <strong>Timeline</strong>: 2026 to 2033 (7 Years to Residency)</p>
+
+  <div class="callout">
+    <strong>Dynamic Formula Rules:</strong>
+    <ul>
+      <li>Change any <strong>Market Cap Return Rate</strong> (Large Cap: 12%, Mid Cap: 15%, Small Cap: 18%) or stock category dropdown, and the <strong>individual stock returns, blended CAGR, 2026–2033 projection table, Operating Reserve, and Facility Contribution</strong> will recalculate live!</li>
+      <li>Modify <strong>Allocation Weights (%)</strong> to see real-time impact on 2027 and 2028 capital deployments.</li>
+      <li>To use in Microsoft Excel or Google Sheets, open the companion spreadsheet file: <a href="file:///c:/Users/Krishna%20Agrawal/charts/Wharton_Investment_Model_Laura_Gao.xlsx" style="color:#087e8b; font-weight:bold;">Wharton_Investment_Model_Laura_Gao.xlsx</a>.</li>
+    </ul>
+  </div>
+
+  <!-- Live KPI Metrics -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-title">Blended Portfolio CAGR</div>
+      <div class="kpi-value" id="kpi-cagr">9.40%</div>
+    </div>
+    <div class="kpi-card" style="background:#eff6ff; border-color:#bfdbfe;">
+      <div class="kpi-title" style="color:#1e40af;">2033 Total Portfolio Value</div>
+      <div class="kpi-value" id="kpi-2033-val" style="color:#1e3a8a;">$760,210</div>
+    </div>
+    <div class="kpi-card" style="background:#fefce8; border-color:#fef08a;">
+      <div class="kpi-title" style="color:#854d0e;">10-Year Operating Reserve (2033)</div>
+      <div class="kpi-value" id="kpi-reserve" style="color:#713f12;">$420,000</div>
+    </div>
+    <div class="kpi-card" style="background:#faf5ff; border-color:#e9d5ff;">
+      <div class="kpi-title" style="color:#6b21a8;">Remaining Facility Contribution</div>
+      <div class="kpi-value" id="kpi-facility" style="color:#581c87;">$340,210</div>
+    </div>
+  </div>
+
+  <!-- Control Panels: Capital Inflows & Market Cap Returns -->
+  <div class="panel-grid">
+    <div class="panel">
+      <h3>1. Capital Deployment Parameters</h3>
+      <table style="margin: 0;">
+        <tr>
+          <td><strong>Initial Contribution (2027 / Year 1):</strong></td>
+          <td style="width: 140px;"><input type="number" id="inflow-2027" value="300000" step="10000" oninput="recalculateModel()"></td>
+        </tr>
+        <tr>
+          <td><strong>Follow-on Contribution (2028 / Year 2):</strong></td>
+          <td><input type="number" id="inflow-2028" value="150000" step="10000" oninput="recalculateModel()"></td>
+        </tr>
+        <tr>
+          <td><strong>Total Principal Capital Invested:</strong></td>
+          <td id="total-principal" style="font-weight: bold; text-align: right; color: var(--primary);">$450,000</td>
+        </tr>
+        <tr>
+          <td><strong>Mandatory 2033 Operating Reserve:</strong></td>
+          <td><input type="number" id="operating-reserve-input" value="420000" step="5000" oninput="recalculateModel()"></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h3>2. Market Cap Return Benchmarks (Rule-Based)</h3>
+      <table style="margin: 0;">
+        <tr>
+          <td><strong>Large Cap Annual Return (> $10B):</strong></td>
+          <td style="width: 120px;"><input type="number" id="ret-large" value="12.0" step="0.5" oninput="recalculateModel()"> %</td>
+        </tr>
+        <tr>
+          <td><strong>Mid Cap Annual Return ($2B – $10B):</strong></td>
+          <td><input type="number" id="ret-mid" value="15.0" step="0.5" oninput="recalculateModel()"> %</td>
+        </tr>
+        <tr>
+          <td><strong>Small Cap Annual Return (< $2B):</strong></td>
+          <td><input type="number" id="ret-small" value="18.0" step="0.5" oninput="recalculateModel()"> %</td>
+        </tr>
+        <tr>
+          <td><strong>Cash / Treasury Buffer Yield:</strong></td>
+          <td><input type="number" id="ret-cash" value="4.25" step="0.25" oninput="recalculateModel()"> %</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Asset Allocation Table -->
+  <h2>2. Portfolio Asset Allocation & Live Formula Recalculation</h2>
+  <table id="alloc-table">
+    <thead>
+      <tr>
+        <th style="width: 7%; text-align: center;">Ticker</th>
+        <th style="width: 17%;">Company Name</th>
+        <th style="width: 12%;">Sector</th>
+        <th style="width: 13%; text-align: center;">Market Cap Category</th>
+        <th style="width: 10%; text-align: center;">Weight (%)</th>
+        <th style="width: 10%; text-align: center;">Formula Return</th>
+        <th style="width: 11%; text-align: right;">2027 Inflow</th>
+        <th style="width: 11%; text-align: right;">2028 Inflow</th>
+        <th style="width: 9%; text-align: center;">Contribution</th>
+      </tr>
+    </thead>
+    <tbody id="alloc-body">
+      <!-- Generated dynamically -->
+    </tbody>
+    <tfoot>
+      <tr style="background-color: #f1f5f9; font-weight: bold;">
+        <td style="text-align: center;">TOTAL</td>
+        <td colspan="3" style="text-align: right;">Allocation Sum:</td>
+        <td id="total-weight" style="text-align: center; color: var(--primary);">100.0%</td>
+        <td id="footer-blended-cagr" style="text-align: center; color: var(--success); font-size: 10pt;">9.40%</td>
+        <td id="total-2027-inflow" style="text-align: right;">$300,000</td>
+        <td id="total-2028-inflow" style="text-align: right;">$150,000</td>
+        <td id="total-contribution-sum" style="text-align: center; color: var(--success);">9.40%</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- Year-by-Year Financial Projection Table -->
+  <h2>3. Dynamic Year-by-Year Financial Projection (2026–2033)</h2>
+  <table id="proj-table">
+    <thead>
+      <tr>
+        <th style="width: 9%; text-align: center;">Timeline</th>
+        <th style="width: 7%; text-align: center;">Year</th>
+        <th style="width: 12%; text-align: right;">Starting Balance</th>
+        <th style="width: 12%; text-align: right;">Net Capital Inflow</th>
+        <th style="width: 10%; text-align: center;">Growth Rate</th>
+        <th style="width: 12%; text-align: right;">Return Generated</th>
+        <th style="width: 14%; text-align: right;">Ending Balance</th>
+        <th style="width: 24%;">Operational Milestones</th>
+      </tr>
+    </thead>
+    <tbody id="proj-body">
+      <!-- Generated dynamically -->
+    </tbody>
+  </table>
+
+  <!-- 2033 Goals Check & Disbursal Table -->
+  <h2>4. 2033 Goal Realization & Funding Status (Automated Check)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 32%;">Goal / Deliverable</th>
+        <th style="width: 18%; text-align: right;">Calculated Amount ($)</th>
+        <th style="width: 20%; text-align: center;">Status / Test</th>
+        <th style="width: 30%;">Mandate Impact</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Total Portfolio Value at Launch (2033)</strong></td>
+        <td id="goal-2033-val" style="text-align: right; font-weight: bold; color: var(--primary);">$760,210</td>
+        <td style="text-align: center;"><span class="badge badge-core">TARGET SURPASSED</span></td>
+        <td>Total capital accumulated through compounding.</td>
+      </tr>
+      <tr>
+        <td><strong>Mandatory Operating Reserve Set-Aside</strong></td>
+        <td id="goal-reserve-val" style="text-align: right; font-weight: bold; color: #854d0e;">$420,000</td>
+        <td style="text-align: center;"><span class="badge badge-core">100% FUNDED</span></td>
+        <td>Locked in a 10-year bond ladder for ten $50,000 payments (2033–2042).</td>
+      </tr>
+      <tr>
+        <td><strong>Remaining Facility Contribution</strong></td>
+        <td id="goal-facility-val" style="text-align: right; font-weight: bold; color: var(--success); font-size: 11pt;">$340,210</td>
+        <td id="goal-facility-status" style="text-align: center;"><span class="badge badge-core">EXCEEDS $225k–$325k GOAL</span></td>
+        <td>Direct equity contribution to establish residency facility in Taiwan.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    // Initial Asset State
+    const portfolioAssets = [
+      { ticker: "KO", name: "The Coca-Cola Co", sector: "Consumer Staples", cap: "Large Cap", weight: 25 },
+      { ticker: "CL", name: "Colgate-Palmolive", sector: "Consumer Staples", cap: "Large Cap", weight: 25 },
+      { ticker: "V", name: "Visa Inc", sector: "Financials / Payments", cap: "Large Cap", weight: 15 },
+      { ticker: "UNH", name: "UnitedHealth Group", sector: "Healthcare", cap: "Large Cap", weight: 10 },
+      { ticker: "HD", name: "Home Depot Inc", sector: "Consumer Discretionary", cap: "Large Cap", weight: 10 },
+      { ticker: "RKT", name: "Reckitt Benckiser", sector: "Consumer Staples", cap: "Large Cap", weight: 10 },
+      { ticker: "CASH", name: "Cash / Treasury Buffer", sector: "Cash Equivalents", cap: "Cash / Buffer", weight: 5 }
+    ];
+
+    function formatUSD(num) {
+      return "$" + Math.round(num).toLocaleString('en-US');
+    }
+
+    function getCapReturn(cap) {
+      const rLarge = parseFloat(document.getElementById("ret-large").value) / 100;
+      const rMid = parseFloat(document.getElementById("ret-mid").value) / 100;
+      const rSmall = parseFloat(document.getElementById("ret-small").value) / 100;
+      const rCash = parseFloat(document.getElementById("ret-cash").value) / 100;
+
+      if (cap === "Large Cap") return rLarge;
+      if (cap === "Mid Cap") return rMid;
+      if (cap === "Small Cap") return rSmall;
+      if (cap === "Cash / Buffer") return rCash;
+      return rLarge;
+    }
+
+    function renderAllocationRows() {
+      const tbody = document.getElementById("alloc-body");
+      tbody.innerHTML = "";
+
+      portfolioAssets.forEach((asset, idx) => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td style="text-align: center; font-weight: bold;">${asset.ticker}</td>
+          <td>${asset.name}</td>
+          <td style="color: #64748b;">${asset.sector}</td>
+          <td>
+            <select onchange="updateAssetCap(${idx}, this.value)">
+              <option value="Large Cap" ${asset.cap === "Large Cap" ? "selected" : ""}>Large Cap (12%)</option>
+              <option value="Mid Cap" ${asset.cap === "Mid Cap" ? "selected" : ""}>Mid Cap (15%)</option>
+              <option value="Small Cap" ${asset.cap === "Small Cap" ? "selected" : ""}>Small Cap (18%)</option>
+              <option value="Cash / Buffer" ${asset.cap === "Cash / Buffer" ? "selected" : ""}>Cash Buffer (4.25%)</option>
+            </select>
+          </td>
+          <td>
+            <input type="number" value="${asset.weight}" step="1" min="0" max="100" oninput="updateAssetWeight(${idx}, this.value)">
+          </td>
+          <td id="asset-ret-${idx}" style="text-align: center; font-weight: bold; color: var(--primary);">0.0%</td>
+          <td id="asset-2027-${idx}" style="text-align: right;">$0</td>
+          <td id="asset-2028-${idx}" style="text-align: right;">$0</td>
+          <td id="asset-contrib-${idx}" style="text-align: center; font-weight: bold; color: var(--success);">0.00%</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateAssetCap(idx, newCap) {
+      portfolioAssets[idx].cap = newCap;
+      recalculateModel();
+    }
+
+    function updateAssetWeight(idx, newWeight) {
+      portfolioAssets[idx].weight = parseFloat(newWeight) || 0;
+      recalculateModel();
+    }
+
+    function recalculateModel() {
+      const inflow2027 = parseFloat(document.getElementById("inflow-2027").value) || 0;
+      const inflow2028 = parseFloat(document.getElementById("inflow-2028").value) || 0;
+      const totalPrincipal = inflow2027 + inflow2028;
+      document.getElementById("total-principal").innerText = formatUSD(totalPrincipal);
+
+      let totalWeight = 0;
+      let blendedCAGR = 0;
+      let sum2027Inflow = 0;
+      let sum2028Inflow = 0;
+
+      portfolioAssets.forEach((asset, idx) => {
+        const rate = getCapReturn(asset.cap);
+        const weightPct = asset.weight / 100;
+        const contrib = weightPct * rate;
+
+        totalWeight += asset.weight;
+        blendedCAGR += contrib;
+
+        const val2027 = inflow2027 * weightPct;
+        const val2028 = inflow2028 * weightPct;
+        sum2027Inflow += val2027;
+        sum2028Inflow += val2028;
+
+        document.getElementById(`asset-ret-${idx}`).innerText = (rate * 100).toFixed(1) + "%";
+        document.getElementById(`asset-2027-${idx}`).innerText = formatUSD(val2027);
+        document.getElementById(`asset-2028-${idx}`).innerText = formatUSD(val2028);
+        document.getElementById(`asset-contrib-${idx}`).innerText = (contrib * 100).toFixed(2) + "%";
+      });
+
+      // Update Allocation Totals
+      document.getElementById("total-weight").innerText = totalWeight.toFixed(1) + "%";
+      if (Math.round(totalWeight) !== 100) {
+        document.getElementById("total-weight").style.color = "#dc2626";
+      } else {
+        document.getElementById("total-weight").style.color = "var(--primary)";
+      }
+      document.getElementById("footer-blended-cagr").innerText = (blendedCAGR * 100).toFixed(2) + "%";
+      document.getElementById("total-2027-inflow").innerText = formatUSD(sum2027Inflow);
+      document.getElementById("total-2028-inflow").innerText = formatUSD(sum2028Inflow);
+      document.getElementById("total-contribution-sum").innerText = (blendedCAGR * 100).toFixed(2) + "%";
+      document.getElementById("kpi-cagr").innerText = (blendedCAGR * 100).toFixed(2) + "%";
+
+      // Calculate Projections (2026-2033)
+      const milestones = [
+        "Baseline year; set up target entry limit orders",
+        "Deploy Tranche 1 across core defensive compounders",
+        "Deploy Tranche 2; full principal actively compounding",
+        "Compounding phase; all dividends automatically reinvested (DRIP)",
+        "Portfolio crosses $600k mark",
+        "Approach Co-Sponsors: Pledge facility contribution range",
+        "Begin de-risking cash flows into 10-year Treasury bond ladder",
+        "Residency Launch: Lock Operating Reserve & Disburse Facility"
+      ];
+
+      const projBody = document.getElementById("proj-body");
+      projBody.innerHTML = "";
+
+      let balance = 0;
+      for (let y = 0; y <= 7; y++) {
+        const calYear = 2026 + y;
+        const timeline = "Year " + y;
+        const starting = balance;
+        let inflow = 0;
+        if (y === 1) inflow = inflow2027;
+        if (y === 2) inflow = inflow2028;
+
+        const growthRate = blendedCAGR;
+        const retDollars = (starting + inflow) * growthRate;
+        const ending = starting + inflow + retDollars;
+        balance = ending;
+
+        const tr = document.createElement("tr");
+        if (y === 7) tr.style.backgroundColor = "#ecfdf5";
+
+        tr.innerHTML = `
+          <td style="text-align: center; font-weight: bold;">${timeline}</td>
+          <td style="text-align: center;">${calYear}</td>
+          <td style="text-align: right;">${formatUSD(starting)}</td>
+          <td style="text-align: right; color: ${inflow > 0 ? '#16a34a' : 'inherit'}; font-weight: ${inflow > 0 ? 'bold' : 'normal'};">${inflow > 0 ? '+' + formatUSD(inflow) : '$0'}</td>
+          <td style="text-align: center; font-weight: bold; color: var(--primary);">${(growthRate * 100).toFixed(2)}%</td>
+          <td style="text-align: right; color: var(--success); font-weight: bold;">+${formatUSD(retDollars)}</td>
+          <td style="text-align: right; font-weight: bold; font-size: ${y === 7 ? '11pt' : '10pt'}; color: ${y === 7 ? '#065f46' : 'var(--primary)'};">${formatUSD(ending)}</td>
+          <td style="font-size: 8.5pt; color: #475569;">${milestones[y]}</td>
+        `;
+        projBody.appendChild(tr);
+      }
+
+      // Update KPI & Goals
+      const final2033 = balance;
+      const opReserve = parseFloat(document.getElementById("operating-reserve-input").value) || 420000;
+      const facilityContrib = final2033 - opReserve;
+
+      document.getElementById("kpi-2033-val").innerText = formatUSD(final2033);
+      document.getElementById("kpi-reserve").innerText = formatUSD(opReserve);
+      document.getElementById("kpi-facility").innerText = formatUSD(facilityContrib);
+
+      document.getElementById("goal-2033-val").innerText = formatUSD(final2033);
+      document.getElementById("goal-reserve-val").innerText = formatUSD(opReserve);
+      document.getElementById("goal-facility-val").innerText = formatUSD(facilityContrib);
+
+      const statusBadge = document.getElementById("goal-facility-status");
+      if (facilityContrib >= 225000) {
+        statusBadge.innerHTML = `<span class="badge badge-core">EXCEEDS $225k–$325k GOAL (+${formatUSD(facilityContrib - 225000)})</span>`;
+      } else {
+        statusBadge.innerHTML = `<span class="badge" style="background:#fee2e2; color:#991b1b;">BELOW $225k TARGET</span>`;
+      }
+    }
+
+    // Initialize
+    window.onload = function() {
+      renderAllocationRows();
+      recalculateModel();
+    };
+  </script>
+</body>
+</html>
