@@ -45,13 +45,13 @@ export class ChartManager {
       ema200: true,
       vwap: true,
       volume: true,
-      rsi: true,   // Default on
-      adx: true,   // Default on
-      mfi: true,   // Default on
-      msi: true    // Default on
+      rsi: true,   // Default on in dedicated sub-pane below chart
+      adx: true,   // Default on in dedicated sub-pane below chart
+      mfi: false,  // Available on demand in sub-pane
+      msi: false   // Available on demand in sub-pane
     };
 
-    this.oscillatorMode = 'overlay'; // 'overlay' (On Candlesticks) or 'split' (Sub-Panes)
+    this.oscillatorMode = 'split'; // TradingView separate sub-panes below chart
     this.resizeObserver = null;
     this.init();
   }
@@ -87,12 +87,8 @@ export class ChartManager {
       },
       leftPriceScale: {
         borderColor: '#1e293b',
-        visible: true,
-        autoScale: true,
-        scaleMargins: {
-          top: 0.18,
-          bottom: 0.14
-        }
+        visible: false,
+        autoScale: true
       },
       rightPriceScale: {
         borderColor: '#1e293b',
@@ -401,7 +397,18 @@ export class ChartManager {
           lineWidth: 2,
           priceLineVisible: false,
           lastValueVisible: true,
-          title: 'RSI'
+          title: 'RSI (14)',
+          autoscaleInfoProvider: (original) => {
+            const res = original ? original() : null;
+            const min = res ? Math.min(20, res.priceRange.minValue) : 20;
+            const max = res ? Math.max(80, res.priceRange.maxValue) : 80;
+            return {
+              priceRange: {
+                minValue: Math.max(0, min - 5),
+                maxValue: Math.min(100, max + 5)
+              }
+            };
+          }
         }, pane);
 
         this.rsiSeries.createPriceLine({
@@ -440,7 +447,17 @@ export class ChartManager {
           lineWidth: 2.5,
           priceLineVisible: false,
           lastValueVisible: true,
-          title: 'ADX'
+          title: 'ADX (14)',
+          autoscaleInfoProvider: (original) => {
+            const res = original ? original() : null;
+            const max = res ? Math.max(50, res.priceRange.maxValue) : 50;
+            return {
+              priceRange: {
+                minValue: 0,
+                maxValue: Math.min(100, max + 5)
+              }
+            };
+          }
         }, pane);
 
         this.diPlusSeries = this.chart.addSeries(LineSeries, {
@@ -489,7 +506,7 @@ export class ChartManager {
           lineWidth: 2,
           priceLineVisible: false,
           lastValueVisible: true,
-          title: 'MFI'
+          title: 'MFI (14)'
         }, pane);
 
         this.mfiSeries.createPriceLine({
@@ -528,7 +545,7 @@ export class ChartManager {
           lineWidth: 2,
           priceLineVisible: false,
           lastValueVisible: true,
-          title: 'MSI'
+          title: 'MSI (20)'
         }, pane);
 
         this.msiSeries.createPriceLine({
@@ -578,9 +595,10 @@ export class ChartManager {
     const totalHeight = this.container.clientHeight;
     const subPaneCount = panes.length - 1;
 
-    // Reserve at least 48% for main candle pane
-    const maxSubHeight = Math.floor((totalHeight * 0.48) / subPaneCount);
-    const targetHeight = Math.max(90, Math.min(135, maxSubHeight));
+    // Allocate 60-72% for main candlestick pane, rest distributed evenly among subpanes
+    const mainRatio = subPaneCount === 1 ? 0.72 : subPaneCount === 2 ? 0.62 : 0.52;
+    const availableForSubPanes = totalHeight * (1 - mainRatio);
+    const targetHeight = Math.max(90, Math.floor(availableForSubPanes / subPaneCount));
 
     for (let i = 1; i < panes.length; i++) {
       panes[i].setHeight(targetHeight);

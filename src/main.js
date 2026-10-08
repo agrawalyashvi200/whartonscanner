@@ -33,7 +33,7 @@ const state = {
   currentADX: { adx: [], diPlus: [], diMinus: [] },
   currentMFI: [],
   currentMSI: [],
-  oscillatorMode: 'overlay',
+  oscillatorMode: 'split',
   selectedSearchIndex: 0,
   searchResults: [],
   isWatchlistOpen: true
@@ -627,14 +627,13 @@ function setupEventListeners() {
   }
 
   // Initial icons
-  // Initial icons (all enabled by default on candlestick chart)
   elements.iconEma50State.innerHTML = ICONS.eye;
   elements.iconEma200State.innerHTML = ICONS.eye;
   elements.iconVwapState.innerHTML = ICONS.eye;
   elements.iconRsiState.innerHTML = ICONS.eye;
   elements.iconAdxState.innerHTML = ICONS.eye;
-  elements.iconMfiState.innerHTML = ICONS.eye;
-  elements.iconMsiState.innerHTML = ICONS.eye;
+  elements.iconMfiState.innerHTML = ICONS.eyeOff;
+  elements.iconMsiState.innerHTML = ICONS.eyeOff;
 
   elements.btnToggleEma50.addEventListener('click', () => {
     const isVisible = chartManager.toggleIndicator('ema50');
@@ -676,13 +675,16 @@ function setupEventListeners() {
     updateHUD(null);
   });
 
-  // Indicator Layout Switcher (Directly on Candlesticks vs Sub-Panes)
+  // Indicator Layout Switcher (Separate Sub-Panes below chart vs Overlay)
   if (elements.btnOscMode) {
+    if (elements.oscModeText) {
+      elements.oscModeText.textContent = 'Separate Panes';
+    }
     elements.btnOscMode.addEventListener('click', () => {
-      state.oscillatorMode = state.oscillatorMode === 'overlay' ? 'split' : 'overlay';
+      state.oscillatorMode = state.oscillatorMode === 'split' ? 'overlay' : 'split';
       chartManager.setOscillatorMode(state.oscillatorMode);
-      elements.oscModeText.textContent = state.oscillatorMode === 'overlay' ? 'On Candles' : 'Sub-Panes';
-      showToast(state.oscillatorMode === 'overlay' ? 'Indicators Placed Directly on Candlesticks' : 'Indicators Moved to Separate Sub-Panes');
+      elements.oscModeText.textContent = state.oscillatorMode === 'split' ? 'Separate Panes' : 'On Candles';
+      showToast(state.oscillatorMode === 'split' ? 'TradingView Sub-Panes Below Chart' : 'Indicators Overlaid on Candlesticks');
     });
   }
 
