@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Unified Market Data Service
  * 
  * Provides live multi-market data for:
@@ -200,8 +200,10 @@ export async function fetchHistoricalData(symbolInfo, timeframe = '1D') {
     const binanceInterval = timeframe === '1M' ? '1M' : timeframe === '1W' ? '1w' : '1d';
     try {
       const isLocal = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
-      const binanceUrl = isLocal ? `${API_PREFIX}/api/binance/api/v3/klines?symbol=${binanceSymbol}&interval=${binanceInterval}&limit=1000` : `https://api.binance.com/api/v3/klines?symbol=${binanceSymbol}&interval=${binanceInterval}&limit=1000`;
-      const bRes = await fetch(binanceUrl);
+      const binanceUrl = isLocal
+        ? `${API_PREFIX}/api/binance/api/v3/klines?symbol=${binanceSymbol}&interval=${binanceInterval}&limit=1000&_=${Date.now()}`
+        : `https://api.binance.com/api/v3/klines?symbol=${binanceSymbol}&interval=${binanceInterval}&limit=1000&_=${Date.now()}`;
+      const bRes = await fetch(binanceUrl, { cache: 'no-store' });
       if (bRes.ok) {
         const raw = await bRes.json();
         if (Array.isArray(raw) && raw.length > 10) {
@@ -229,22 +231,38 @@ export async function fetchHistoricalData(symbolInfo, timeframe = '1D') {
     const yahooRange = timeframe === '1M' ? '10y' : timeframe === '1W' ? '5y' : '3y';
 
     try {
-      const url = `${API_PREFIX}/api/yahoo/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${yahooInterval}&range=${yahooRange}`;
-      const yRes = await fetch(url);
+      const cacheBust = Date.now();
+      const url = `${API_PREFIX}/api/yahoo/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${yahooInterval}&range=${yahooRange}&_=${cacheBust}`;
+      const yRes = await fetch(url, { cache: 'no-store' });
       if (yRes.ok) {
         const data = await yRes.json();
         const result = data?.chart?.result?.[0];
         if (result && result.timestamp && result.indicators?.quote?.[0]) {
           const timestamps = result.timestamp;
           const quote = result.indicators.quote[0];
+          const meta = result.meta;
+          const livePrice = meta?.regularMarketPrice;
+          const liveHigh = meta?.regularMarketDayHigh;
+          const liveLow = meta?.regularMarketDayLow;
+          const liveVolume = meta?.regularMarketVolume;
           const tempBars = [];
 
           for (let i = 0; i < timestamps.length; i++) {
-            const o = quote.open?.[i];
-            const h = quote.high?.[i];
-            const l = quote.low?.[i];
-            const c = quote.close?.[i];
-            const v = quote.volume?.[i] || 0;
+            let o = quote.open?.[i];
+            let h = quote.high?.[i];
+            let l = quote.low?.[i];
+            let c = quote.close?.[i];
+            let v = quote.volume?.[i] || 0;
+
+            // Yahoo Finance often leaves close: null for the ongoing / current trading day candle!
+            // Recover it using meta.regularMarketPrice so today's live candle is never dropped.
+            if (i === timestamps.length - 1 && livePrice != null) {
+              if (c == null || isNaN(c)) c = livePrice;
+              if (o == null || isNaN(o)) o = livePrice;
+              if (h == null || isNaN(h)) h = liveHigh != null ? Math.max(liveHigh, c) : Math.max(o, c);
+              if (l == null || isNaN(l)) l = liveLow != null ? Math.min(liveLow, c) : Math.min(o, c);
+              if (!v && liveVolume) v = liveVolume;
+            }
 
             // Skip null or missing points (holidays/halts)
             if (o != null && h != null && l != null && c != null && !isNaN(c)) {
@@ -257,6 +275,14 @@ export async function fetchHistoricalData(symbolInfo, timeframe = '1D') {
                 volume: Number(v)
               });
             }
+          }
+
+          // Ensure the very last candle always reflects the live price if available
+          if (livePrice != null && tempBars.length > 0) {
+            const lastBar = tempBars[tempBars.length - 1];
+            lastBar.close = Number(livePrice.toFixed(livePrice < 1 ? 5 : 2));
+            if (liveHigh != null && liveHigh > lastBar.high) lastBar.high = Number(liveHigh.toFixed(livePrice < 1 ? 5 : 2));
+            if (liveLow != null && liveLow < lastBar.low) lastBar.low = Number(liveLow.toFixed(livePrice < 1 ? 5 : 2));
           }
 
           if (tempBars.length > 5) {
