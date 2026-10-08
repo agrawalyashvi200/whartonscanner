@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Unified Market Data Service
  * 
  * Provides live multi-market data for:
@@ -46,16 +46,16 @@ export const CURATED_SYMBOLS = [
   { symbol: 'QQQ', name: 'Invesco QQQ Trust', category: MARKET_CATEGORIES.STOCKS, exchange: 'NASDAQ', badge: 'ETF', currency: '$', basePrice: 486 },
 
   // Indian Equities & Indices (NSE)
-  { symbol: 'RELIANCE.NS', name: 'Reliance Industries Ltd.', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: '₹', basePrice: 2950 },
-  { symbol: 'TCS.NS', name: 'Tata Consultancy Services', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: '₹', basePrice: 4250 },
-  { symbol: 'INFY.NS', name: 'Infosys Limited', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: '₹', basePrice: 1920 },
-  { symbol: 'HDFCBANK.NS', name: 'HDFC Bank Limited', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: '₹', basePrice: 1680 },
-  { symbol: 'ICICIBANK.NS', name: 'ICICI Bank Limited', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: '₹', basePrice: 1240 },
-  { symbol: 'TATAMOTORS.NS', name: 'Tata Motors Limited', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: '₹', basePrice: 960 },
-  { symbol: 'SBIN.NS', name: 'State Bank of India', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: '₹', basePrice: 795 },
-  { symbol: 'ITC.NS', name: 'ITC Limited', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: '₹', basePrice: 510 },
-  { symbol: '^NSEI', name: 'NIFTY 50 Index', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDEX', currency: '₹', basePrice: 25100 },
-  { symbol: '^NSEBANK', name: 'NIFTY Bank Index', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDEX', currency: '₹', basePrice: 51800 },
+  { symbol: 'RELIANCE.NS', name: 'Reliance Industries Ltd.', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: 'â‚¹', basePrice: 2950 },
+  { symbol: 'TCS.NS', name: 'Tata Consultancy Services', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: 'â‚¹', basePrice: 4250 },
+  { symbol: 'INFY.NS', name: 'Infosys Limited', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: 'â‚¹', basePrice: 1920 },
+  { symbol: 'HDFCBANK.NS', name: 'HDFC Bank Limited', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: 'â‚¹', basePrice: 1680 },
+  { symbol: 'ICICIBANK.NS', name: 'ICICI Bank Limited', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: 'â‚¹', basePrice: 1240 },
+  { symbol: 'TATAMOTORS.NS', name: 'Tata Motors Limited', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: 'â‚¹', basePrice: 960 },
+  { symbol: 'SBIN.NS', name: 'State Bank of India', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: 'â‚¹', basePrice: 795 },
+  { symbol: 'ITC.NS', name: 'ITC Limited', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDIA', currency: 'â‚¹', basePrice: 510 },
+  { symbol: '^NSEI', name: 'NIFTY 50 Index', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDEX', currency: 'â‚¹', basePrice: 25100 },
+  { symbol: '^NSEBANK', name: 'NIFTY Bank Index', category: MARKET_CATEGORIES.INDIAN, exchange: 'NSE', badge: 'INDEX', currency: 'â‚¹', basePrice: 51800 },
 
   // Commodities & Global Indices
   { symbol: 'GC=F', name: 'Gold Futures', category: MARKET_CATEGORIES.COMMODITIES, exchange: 'COMEX', badge: 'COMMODITY', currency: '$', basePrice: 2660 },
@@ -68,8 +68,8 @@ export const CURATED_SYMBOLS = [
   // Forex
   { symbol: 'EURUSD=X', name: 'EUR / USD', category: MARKET_CATEGORIES.FOREX, exchange: 'FX', badge: 'FOREX', currency: '', basePrice: 1.096 },
   { symbol: 'GBPUSD=X', name: 'GBP / USD', category: MARKET_CATEGORIES.FOREX, exchange: 'FX', badge: 'FOREX', currency: '', basePrice: 1.312 },
-  { symbol: 'USDJPY=X', name: 'USD / JPY', category: MARKET_CATEGORIES.FOREX, exchange: 'FX', badge: 'FOREX', currency: '¥', basePrice: 148.5 },
-  { symbol: 'USDINR=X', name: 'USD / INR', category: MARKET_CATEGORIES.FOREX, exchange: 'FX', badge: 'FOREX', currency: '₹', basePrice: 83.95 },
+  { symbol: 'USDJPY=X', name: 'USD / JPY', category: MARKET_CATEGORIES.FOREX, exchange: 'FX', badge: 'FOREX', currency: 'Â¥', basePrice: 148.5 },
+  { symbol: 'USDINR=X', name: 'USD / INR', category: MARKET_CATEGORIES.FOREX, exchange: 'FX', badge: 'FOREX', currency: 'â‚¹', basePrice: 83.95 },
   { symbol: 'AUDUSD=X', name: 'AUD / USD', category: MARKET_CATEGORIES.FOREX, exchange: 'FX', badge: 'FOREX', currency: '', basePrice: 0.68 }
 ];
 
@@ -143,7 +143,7 @@ export async function searchSymbols(query, category = MARKET_CATEGORIES.ALL) {
               exchange: q.exchange || q.dispExchange || 'Global',
               category: cat,
               badge: badge,
-              currency: q.currency ? (q.currency === 'USD' ? '$' : q.currency === 'INR' ? '₹' : q.currency) : '$',
+              currency: q.currency ? (q.currency === 'USD' ? '$' : q.currency === 'INR' ? 'â‚¹' : q.currency) : '$',
               basePrice: 100
             };
           })
@@ -199,7 +199,9 @@ export async function fetchHistoricalData(symbolInfo, timeframe = '1D') {
   if (binanceSymbol) {
     const binanceInterval = timeframe === '1M' ? '1M' : timeframe === '1W' ? '1w' : '1d';
     try {
-      const bRes = await fetch(`${API_PREFIX}/api/binance/api/v3/klines?symbol=${binanceSymbol}&interval=${binanceInterval}&limit=1000`);
+      const isLocal = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+      const binanceUrl = isLocal ? `${API_PREFIX}/api/binance/api/v3/klines?symbol=${binanceSymbol}&interval=${binanceInterval}&limit=1000` : `https://api.binance.com/api/v3/klines?symbol=${binanceSymbol}&interval=${binanceInterval}&limit=1000`;
+      const bRes = await fetch(binanceUrl);
       if (bRes.ok) {
         const raw = await bRes.json();
         if (Array.isArray(raw) && raw.length > 10) {
@@ -336,3 +338,4 @@ function generateSyntheticData(symbolInfo, timeframe = '1D') {
 
   return bars;
 }
+
