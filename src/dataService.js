@@ -175,6 +175,107 @@ export async function searchSymbols(query, category = MARKET_CATEGORIES.ALL) {
   return merged;
 }
 
+const KRAKEN_PAIRS = {
+  'BTC-USD': 'XBTUSD',
+  'ETH-USD': 'ETHUSD',
+  'SOL-USD': 'SOLUSD',
+  'XRP-USD': 'XRPUSD'
+};
+
+/**
+ * Fetch Live Crypto data directly from Kraken (CORS enabled worldwide, unblocked in India)
+ */
+async function fetchKrakenData(krakenPair, timeframe) {
+  const interval = timeframe === '1M' ? '21600' : timeframe === '1W' ? '10080' : '1440';
+  const url = `https://api.kraken.com/0/public/OHLC?pair=${krakenPair}&interval=${interval}&_=${Date.now()}`;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) return null;
+  const data = await res.json();
+  if (!data?.result) return null;
+  const resultKey = Object.keys(data.result).find(k => k !== 'last');
+  const raw = data.result[resultKey];
+  if (!Array.isArray(raw) || raw.length === 0) return null;
+  return raw.map(k => ({
+    time: formatDate(k[0] * 1000),
+    open: parseFloat(k[1]),
+    high: parseFloat(k[2]),
+    low: parseFloat(k[3]),
+    close: parseFloat(k[4]),
+    volume: parseFloat(k[6])
+  }));
+}
+
+/**
+ * Aggregate daily candles to weekly or monthly candles
+ */
+function aggregateTimeframe(dailyBars, timeframe) {
+  if (timeframe === '1D' || !dailyBars || dailyBars.length === 0) return dailyBars;
+
+  const groups = new Map();
+  for (const bar of dailyBars) {
+    const d = new Date(bar.time);
+    let key;
+    if (timeframe === '1W') {
+      const day = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() - day + 1);
+      key = d.toISOString().slice(0, 10);
+    } else if (timeframe === '1M') {
+      key = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-01`;
+    } else {
+      return dailyBars;
+    }
+
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(bar);
+  }
+
+  const result = [];
+  for (const [key, bars] of groups.entries()) {
+    const open = bars[0].open;
+    const close = bars[bars.length - 1].close;
+    let high = -Infinity;
+    let low = Infinity;
+    let volume = 0;
+    for (const b of bars) {
+      if (b.high > high) high = b.high;
+      if (b.low < low) low = b.low;
+      volume += b.volume || 0;
+    }
+    result.push({
+      time: key,
+      open: Number(open.toFixed(open < 1 ? 5 : 2)),
+      high: Number(high.toFixed(high < 1 ? 5 : 2)),
+      low: Number(low.toFixed(low < 1 ? 5 : 2)),
+      close: Number(close.toFixed(close < 1 ? 5 : 2)),
+      volume
+    });
+  }
+
+  return result;
+}
+
+/**
+ * Fetch authentic pre-cached historical market dataset (available on GitHub Pages for all symbols)
+ */
+async function fetchStaticData(symbol) {
+  const enc = encodeURIComponent(symbol);
+  const candidates = [`./data/${enc}.json`, `./data/${symbol}.json`];
+  for (const path of candidates) {
+    try {
+      const res = await fetch(`${path}?_=${Date.now()}`, { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 5) {
+          return data;
+        }
+      }
+    } catch {
+      // try next
+    }
+  }
+  return null;
+}
+
 /**
  * Fetch Historical Market Candlesticks
  * 
@@ -182,21 +283,26 @@ export async function searchSymbols(query, category = MARKET_CATEGORIES.ALL) {
  * - '1D' (Daily - default)
  * - '1W' (Weekly)
  * - '1M' (Monthly)
- * 
- * Sources:
- * 1. Binance REST API for crypto (ultra high resolution & volume)
- * 2. Yahoo Finance Chart API for equities, indices, commodities, forex
- * 3. High-fidelity synthetic generator fallback for seamless stability
  */
 export async function fetchHistoricalData(symbolInfo, timeframe = '1D') {
   const symbol = typeof symbolInfo === 'string' ? symbolInfo : symbolInfo.symbol;
   const isCrypto = symbolInfo.category === MARKET_CATEGORIES.CRYPTO || symbol.includes('BTC') || symbol.includes('ETH') || symbol.endsWith('-USD');
+  const krakenPair = KRAKEN_PAIRS[symbol];
   const binanceSymbol = symbolInfo.binanceSymbol || (isCrypto ? symbol.replace('-USD', 'USDT') : null);
 
   let bars = null;
 
-  // 1. Try Binance for Crypto first (fast, generous limits, 1000 bars)
-  if (binanceSymbol) {
+  // 1. Try Kraken for live crypto (CORS enabled worldwide, unblocked in India)
+  if (krakenPair) {
+    try {
+      bars = await fetchKrakenData(krakenPair, timeframe);
+    } catch (e) {
+      console.warn('Kraken fetch failed, will try alternatives:', e);
+    }
+  }
+
+  // 2. Try Binance for Crypto if Kraken wasn't used or failed
+  if ((!bars || bars.length === 0) && binanceSymbol) {
     const binanceInterval = timeframe === '1M' ? '1M' : timeframe === '1W' ? '1w' : '1d';
     try {
       const isLocal = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
@@ -221,11 +327,23 @@ export async function fetchHistoricalData(symbolInfo, timeframe = '1D') {
         }
       }
     } catch (e) {
-      console.warn('Binance fetch failed, will try Yahoo:', e);
+      console.warn('Binance fetch failed, will try authentic static dataset:', e);
     }
   }
 
-  // 2. Try Yahoo Finance Chart API
+  // 3. Try pre-packaged authentic historical dataset (100% reliable on GitHub Pages)
+  if (!bars || bars.length === 0) {
+    try {
+      const staticDaily = await fetchStaticData(symbol);
+      if (staticDaily && staticDaily.length > 0) {
+        bars = aggregateTimeframe(staticDaily, timeframe);
+      }
+    } catch (e) {
+      console.warn('Static dataset load failed:', e);
+    }
+  }
+
+  // 4. Try Yahoo Finance Chart API (works on localhost via Vite proxy)
   if (!bars || bars.length === 0) {
     const yahooInterval = timeframe === '1M' ? '1mo' : timeframe === '1W' ? '1wk' : '1d';
     const yahooRange = timeframe === '1M' ? '10y' : timeframe === '1W' ? '5y' : '3y';
@@ -254,8 +372,6 @@ export async function fetchHistoricalData(symbolInfo, timeframe = '1D') {
             let c = quote.close?.[i];
             let v = quote.volume?.[i] || 0;
 
-            // Yahoo Finance often leaves close: null for the ongoing / current trading day candle!
-            // Recover it using meta.regularMarketPrice so today's live candle is never dropped.
             if (i === timestamps.length - 1 && livePrice != null) {
               if (c == null || isNaN(c)) c = livePrice;
               if (o == null || isNaN(o)) o = livePrice;
@@ -264,7 +380,6 @@ export async function fetchHistoricalData(symbolInfo, timeframe = '1D') {
               if (!v && liveVolume) v = liveVolume;
             }
 
-            // Skip null or missing points (holidays/halts)
             if (o != null && h != null && l != null && c != null && !isNaN(c)) {
               tempBars.push({
                 time: formatDate(timestamps[i] * 1000),
@@ -277,7 +392,6 @@ export async function fetchHistoricalData(symbolInfo, timeframe = '1D') {
             }
           }
 
-          // Ensure the very last candle always reflects the live price if available
           if (livePrice != null && tempBars.length > 0) {
             const lastBar = tempBars[tempBars.length - 1];
             lastBar.close = Number(livePrice.toFixed(livePrice < 1 ? 5 : 2));
