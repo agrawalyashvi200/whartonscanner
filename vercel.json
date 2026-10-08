@@ -1,0 +1,13 @@
+{
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api/yahoo/(.*)",
+      "destination": "/api/yahoo?path=$1"
+    },
+    {
+      "source": "/api/binance/(.*)",
+      "destination": "/api/binance?path=$1"
+    }
+  ]
+}

@@ -489,9 +489,13 @@ function renderSearchResults() {
     li.className = 'search-item' + (index === state.selectedSearchIndex ? ' highlighted' : '');
     li.dataset.index = index;
 
+    const isDirect = !!item.isDirectAction;
+    const badgeClass = isDirect ? 'search-sym-badge direct' : 'search-sym-badge';
+    const badgeText = isDirect ? 'DIRECT' : (item.badge || 'TICKER');
+
     li.innerHTML = `
       <div class="search-item-left">
-        <span class="search-sym-badge">${item.badge || 'TICKER'}</span>
+        <span class="${badgeClass}">${badgeText}</span>
         <div class="search-sym-info">
           <span class="search-sym-title">${item.symbol}</span>
           <span class="search-sym-name">${item.name}</span>

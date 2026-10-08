@@ -13,10 +13,18 @@ if (!fs.existsSync(outDir)) {
 const SYMBOLS = [
   // Crypto
   'BTC-USD', 'ETH-USD', 'SOL-USD', 'BNB-USD', 'XRP-USD',
-  // US Equities
+  // US Equities & Tech
   'AAPL', 'NVDA', 'TSLA', 'MSFT', 'AMZN', 'GOOGL', 'META', 'AMD', 'SPY', 'QQQ',
-  // Indian Equities & Indices (NSE)
-  'RELIANCE.NS', 'TCS.NS', 'INFY.NS', 'HDFCBANK.NS', 'ICICIBANK.NS', 'TATAMOTORS.NS', 'SBIN.NS', 'ITC.NS', '^NSEI', '^NSEBANK',
+  // Wharton Core Anchor Stocks
+  'KO', 'CL', 'V', 'UNH', 'HD', 'DIS', 'SBUX', 'UBER', 'ASML', 'AVGO', 'SCHW',
+  // Wharton Satellite Stocks & Growth
+  'OKE', 'CCJ', 'SHOP', 'ANF', 'BHP', 'FCX', 'LULU', 'M', 'PNC', 'PRU', 'SNPS',
+  'SONY', 'SYK', 'TSN', 'WM', 'YUM', 'MANH', 'FIZZ', 'ACB', 'UTSI',
+  // Indian Equities (NSE)
+  'RELIANCE.NS', 'TCS.NS', 'INFY.NS', 'HDFCBANK.NS', 'ICICIBANK.NS', 'SBIN.NS', 'ITC.NS',
+  'ASIANPAINT.NS', 'M&M.NS', '^NSEI', '^NSEBANK',
+  // Global & Canadian
+  'AC.TO', 'BNS.TO', 'RY.TO',
   // Commodities & Global Indices
   'GC=F', 'SI=F', 'CL=F', '^GSPC', '^IXIC', '^DJI',
   // Forex
