@@ -42,88 +42,83 @@ const state = {
 let chartManager = null;
 let searchDebounceTimer = null;
 
-// DOM Elements
-const elements = {
-  chartContainer: document.getElementById('chart-container'),
-  loader: document.getElementById('chart-loader'),
-  loaderMsg: document.getElementById('loader-msg'),
-  hudDate: document.getElementById('hud-date'),
-  hudOpen: document.getElementById('hud-open'),
-  hudHigh: document.getElementById('hud-high'),
-  hudLow: document.getElementById('hud-low'),
-  hudClose: document.getElementById('hud-close'),
-  hudVolume: document.getElementById('hud-volume'),
-  hudEma50: document.getElementById('hud-ema50'),
-  hudEma200: document.getElementById('hud-ema200'),
-  hudVwap: document.getElementById('hud-vwap'),
+// DOM Elements holder
+const elements = {};
 
-  // Oscillator HUD Elements
-  hudRowOscillators: document.getElementById('hud-row-oscillators'),
-  hudRsi: document.getElementById('hud-rsi'),
-  hudAdx: document.getElementById('hud-adx'),
-  hudAdxDi: document.getElementById('hud-adx-di'),
-  hudMfi: document.getElementById('hud-mfi'),
-  hudMsi: document.getElementById('hud-msi'),
-  hudItemRsi: document.getElementById('hud-item-rsi'),
-  hudItemAdx: document.getElementById('hud-item-adx'),
-  hudItemMfi: document.getElementById('hud-item-mfi'),
-  hudItemMsi: document.getElementById('hud-item-msi'),
+function initElements() {
+  elements.chartContainer = document.getElementById('chart-container');
+  elements.loader = document.getElementById('chart-loader');
+  elements.loaderMsg = document.getElementById('loader-msg');
+  elements.hudDate = document.getElementById('hud-date');
+  elements.hudOpen = document.getElementById('hud-open');
+  elements.hudHigh = document.getElementById('hud-high');
+  elements.hudLow = document.getElementById('hud-low');
+  elements.hudClose = document.getElementById('hud-close');
+  elements.hudVolume = document.getElementById('hud-volume');
+  elements.hudEma50 = document.getElementById('hud-ema50');
+  elements.hudEma200 = document.getElementById('hud-ema200');
+  elements.hudVwap = document.getElementById('hud-vwap');
 
-  // Market Strip
-  stripSymbol: document.getElementById('strip-symbol'),
-  stripBadge: document.getElementById('strip-badge'),
-  stripName: document.getElementById('strip-name'),
-  stripPrice: document.getElementById('strip-price'),
-  stripChange: document.getElementById('strip-change'),
-  stripHigh: document.getElementById('strip-high'),
-  stripLow: document.getElementById('strip-low'),
-  stripVolume: document.getElementById('strip-volume'),
-  stripSignal: document.getElementById('strip-signal'),
+  elements.hudRowOscillators = document.getElementById('hud-row-oscillators');
+  elements.hudRsi = document.getElementById('hud-rsi');
+  elements.hudAdx = document.getElementById('hud-adx');
+  elements.hudAdxDi = document.getElementById('hud-adx-di');
+  elements.hudMfi = document.getElementById('hud-mfi');
+  elements.hudMsi = document.getElementById('hud-msi');
+  elements.hudItemRsi = document.getElementById('hud-item-rsi');
+  elements.hudItemAdx = document.getElementById('hud-item-adx');
+  elements.hudItemMfi = document.getElementById('hud-item-mfi');
+  elements.hudItemMsi = document.getElementById('hud-item-msi');
 
-  // Search
-  searchModal: document.getElementById('search-modal'),
-  searchTriggerBtn: document.getElementById('btn-search-trigger'),
-  searchCloseBtn: document.getElementById('btn-close-search'),
-  searchInput: document.getElementById('search-modal-input'),
-  searchResultsList: document.getElementById('search-results-list'),
-  searchCatTabs: document.getElementById('modal-category-tabs'),
+  elements.stripSymbol = document.getElementById('strip-symbol');
+  elements.stripBadge = document.getElementById('strip-badge');
+  elements.stripName = document.getElementById('strip-name');
+  elements.stripPrice = document.getElementById('strip-price');
+  elements.stripChange = document.getElementById('strip-change');
+  elements.stripHigh = document.getElementById('strip-high');
+  elements.stripLow = document.getElementById('strip-low');
+  elements.stripVolume = document.getElementById('strip-volume');
+  elements.stripSignal = document.getElementById('strip-signal');
 
-  // Timeframe
-  tfButtons: document.querySelectorAll('.tf-btn'),
+  elements.searchModal = document.getElementById('search-modal');
+  elements.searchTriggerBtn = document.getElementById('btn-search-trigger');
+  elements.searchCloseBtn = document.getElementById('btn-close-search');
+  elements.searchInput = document.getElementById('search-modal-input');
+  elements.searchResultsList = document.getElementById('search-results-list');
+  elements.searchCatTabs = document.getElementById('modal-category-tabs');
 
-  // Indicators Toggles
-  btnToggleEma50: document.getElementById('btn-toggle-ema50'),
-  btnToggleEma200: document.getElementById('btn-toggle-ema200'),
-  btnToggleVwap: document.getElementById('btn-toggle-vwap'),
-  iconEma50State: document.getElementById('icon-ema50-state'),
-  iconEma200State: document.getElementById('icon-ema200-state'),
-  iconVwapState: document.getElementById('icon-vwap-state'),
+  elements.tfButtons = document.querySelectorAll('.tf-btn');
 
-  btnToggleRsi: document.getElementById('btn-toggle-rsi'),
-  btnToggleAdx: document.getElementById('btn-toggle-adx'),
-  btnToggleMfi: document.getElementById('btn-toggle-mfi'),
-  btnToggleMsi: document.getElementById('btn-toggle-msi'),
-  iconRsiState: document.getElementById('icon-rsi-state'),
-  iconAdxState: document.getElementById('icon-adx-state'),
-  iconMfiState: document.getElementById('icon-mfi-state'),
-  iconMsiState: document.getElementById('icon-msi-state'),
+  elements.btnToggleEma50 = document.getElementById('btn-toggle-ema50');
+  elements.btnToggleEma200 = document.getElementById('btn-toggle-ema200');
+  elements.btnToggleVwap = document.getElementById('btn-toggle-vwap');
+  elements.iconEma50State = document.getElementById('icon-ema50-state');
+  elements.iconEma200State = document.getElementById('icon-ema200-state');
+  elements.iconVwapState = document.getElementById('icon-vwap-state');
 
-  // Oscillator Mode Selector
-  btnOscMode: document.getElementById('btn-osc-mode'),
-  oscModeText: document.getElementById('osc-mode-text'),
+  elements.btnToggleRsi = document.getElementById('btn-toggle-rsi');
+  elements.btnToggleAdx = document.getElementById('btn-toggle-adx');
+  elements.btnToggleMfi = document.getElementById('btn-toggle-mfi');
+  elements.btnToggleMsi = document.getElementById('btn-toggle-msi');
+  elements.iconRsiState = document.getElementById('icon-rsi-state');
+  elements.iconAdxState = document.getElementById('icon-adx-state');
+  elements.iconMfiState = document.getElementById('icon-mfi-state');
+  elements.iconMsiState = document.getElementById('icon-msi-state');
 
-  // Watchlist & Controls
-  watchlistSidebar: document.getElementById('watchlist-sidebar'),
-  watchlistList: document.getElementById('watchlist-list'),
-  btnToggleWatchlist: document.getElementById('btn-toggle-watchlist'),
-  chartTypeSelect: document.getElementById('chart-type-select'),
-  btnFitChart: document.getElementById('btn-fit-chart'),
-  btnScreenshot: document.getElementById('btn-screenshot'),
-  btnIndicatorInfo: document.getElementById('btn-indicator-info'),
-  infoModal: document.getElementById('info-modal'),
-  btnCloseInfo: document.getElementById('btn-close-info'),
-  toastMsg: document.getElementById('toast-msg')
-};
+  elements.btnOscMode = document.getElementById('btn-osc-mode');
+  elements.oscModeText = document.getElementById('osc-mode-text');
+
+  elements.watchlistSidebar = document.getElementById('watchlist-sidebar');
+  elements.watchlistList = document.getElementById('watchlist-list');
+  elements.btnToggleWatchlist = document.getElementById('btn-toggle-watchlist');
+  elements.chartTypeSelect = document.getElementById('chart-type-select');
+  elements.btnFitChart = document.getElementById('btn-fit-chart');
+  elements.btnScreenshot = document.getElementById('btn-screenshot');
+  elements.btnIndicatorInfo = document.getElementById('btn-indicator-info');
+  elements.infoModal = document.getElementById('info-modal');
+  elements.btnCloseInfo = document.getElementById('btn-close-info');
+  elements.toastMsg = document.getElementById('toast-msg');
+}
 
 // Formatting Utilities
 function formatNumber(num, currency = '$', maxDecimals = 2) {
@@ -744,6 +739,8 @@ function setupEventListeners() {
 
 // Bootstrap Application
 function initApp() {
+  initElements();
+
   chartManager = new ChartManager(elements.chartContainer, (crosshairData) => {
     updateHUD(crosshairData);
   });
