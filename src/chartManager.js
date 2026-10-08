@@ -93,6 +93,7 @@ export class ChartManager {
       rightPriceScale: {
         borderColor: '#1e293b',
         visible: true,
+        autoScale: true,
         scaleMargins: {
           top: 0.1,
           bottom: 0.22
@@ -110,7 +111,7 @@ export class ChartManager {
         mouseWheel: true,
         pressedMouseMove: true,
         horzTouchDrag: true,
-        vertTouchDrag: true
+        vertTouchDrag: false
       },
       handleScale: {
         axisPressedMouseMove: true,
@@ -213,6 +214,20 @@ export class ChartManager {
       }
     });
     this.resizeObserver.observe(this.container);
+
+    // Double tap (touch) or double click to auto-reset scale & fit content
+    let lastTapTime = 0;
+    this.container.addEventListener('touchend', () => {
+      const now = Date.now();
+      if (now - lastTapTime < 350) {
+        this.fitContent();
+      }
+      lastTapTime = now;
+    });
+
+    this.container.addEventListener('dblclick', () => {
+      this.fitContent();
+    });
   }
 
   createMainSeries(type) {
@@ -648,7 +663,23 @@ export class ChartManager {
     }
 
     this.rebuildOscillators();
-    this.chart.timeScale().fitContent();
+
+    // Force price scale to autoScale to the new asset price range (e.g. from $80,000 to $200)
+    if (this.chart) {
+      this.chart.priceScale('right').applyOptions({ autoScale: true });
+      if (this.oscillatorMode === 'overlay' && this.chart.priceScale('left')) {
+        this.chart.priceScale('left').applyOptions({ autoScale: true });
+      }
+      this.chart.timeScale().fitContent();
+
+      // Second-pass layout engine execution to guarantee vertical bounds update on mobile
+      requestAnimationFrame(() => {
+        if (this.chart) {
+          this.chart.priceScale('right').applyOptions({ autoScale: true });
+          this.chart.timeScale().fitContent();
+        }
+      });
+    }
   }
 
   /**
@@ -691,10 +722,14 @@ export class ChartManager {
   }
 
   /**
-   * Auto fit timescale content
+   * Auto fit timescale content & price scale
    */
   fitContent() {
     if (this.chart) {
+      this.chart.priceScale('right').applyOptions({ autoScale: true });
+      if (this.oscillatorMode === 'overlay' && this.chart.priceScale('left')) {
+        this.chart.priceScale('left').applyOptions({ autoScale: true });
+      }
       this.chart.timeScale().fitContent();
     }
   }
