@@ -128,7 +128,12 @@ const elements = {
 // Formatting Utilities
 function formatNumber(num, currency = '$', maxDecimals = 2) {
   if (num === null || num === undefined || isNaN(num)) return '---';
-  const prefix = currency ? (currency === '₹' ? '₹' : currency === '$' ? '$' : currency + ' ') : '';
+  let prefix = '$';
+  if (!currency) prefix = '';
+  else if (currency === '₹' || currency === 'INR' || currency.includes('â')) prefix = '₹';
+  else if (currency === '¥' || currency === 'JPY') prefix = '¥';
+  else if (currency === '$' || currency === 'USD') prefix = '$';
+  else prefix = currency + ' ';
   const decimals = num < 1 ? 4 : maxDecimals;
   return prefix + Number(num).toLocaleString('en-US', {
     minimumFractionDigits: decimals,
