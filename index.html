@@ -25,104 +25,112 @@
         <!-- Global Search Trigger Pill -->
         <button class="search-trigger-btn" id="btn-search-trigger" title="Search all markets (Ctrl+K)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <span id="search-trigger-label">Search stocks, crypto, forex, indices...</span>
+          <span id="search-trigger-label">Search markets...</span>
           <kbd>Ctrl K</kbd>
         </button>
-      </div>
 
-      <!-- Navigation Center: Timeframe & Indicators -->
-      <div class="nav-center">
-        <!-- Timeframe Segmented Control (Daily default, Weekly, Monthly) -->
-        <div class="timeframe-group" role="group" aria-label="Timeframe selection">
-          <button class="tf-btn active" data-tf="1D" id="tf-1d" title="Daily Timeframe (Default)">1D</button>
-          <button class="tf-btn" data-tf="1W" id="tf-1w" title="Weekly Timeframe">1W</button>
-          <button class="tf-btn" data-tf="1M" id="tf-1m" title="Monthly Timeframe">1M</button>
-        </div>
-
-        <!-- Indicator Toggle Badges -->
-        <div class="indicators-toolbar" role="group" aria-label="Indicator toggles">
-          <!-- Trend Overlays Group -->
-          <button class="ind-pill ema50 active" id="btn-toggle-ema50" title="Toggle 50 Exponential Moving Average">
-            <span class="ind-dot ema50"></span>
-            <span>50 EMA</span>
-            <span class="ind-toggle-icon" id="icon-ema50-state"></span>
-          </button>
-
-          <button class="ind-pill ema200 active" id="btn-toggle-ema200" title="Toggle 200 Exponential Moving Average">
-            <span class="ind-dot ema200"></span>
-            <span>200 EMA</span>
-            <span class="ind-toggle-icon" id="icon-ema200-state"></span>
-          </button>
-
-          <button class="ind-pill vwap active" id="btn-toggle-vwap" title="Toggle 1-Year Rolling Volume-Weighted Average Price">
-            <span class="ind-dot vwap"></span>
-            <span>1Y VWAP</span>
-            <span class="ind-toggle-icon" id="icon-vwap-state"></span>
-          </button>
-
-          <div class="toolbar-divider" title="Oscillators"></div>
-
-          <!-- Oscillators Sub-Pane Group -->
-          <button class="ind-pill rsi active" id="btn-toggle-rsi" title="Toggle Relative Strength Index (14)">
-            <span class="ind-dot rsi"></span>
-            <span>RSI</span>
-            <span class="ind-toggle-icon" id="icon-rsi-state"></span>
-          </button>
-
-          <button class="ind-pill adx active" id="btn-toggle-adx" title="Toggle Average Directional Index (14)">
-            <span class="ind-dot adx"></span>
-            <span>ADX</span>
-            <span class="ind-toggle-icon" id="icon-adx-state"></span>
-          </button>
-
-          <button class="ind-pill mfi" id="btn-toggle-mfi" title="Toggle Money Flow Index (14)">
-            <span class="ind-dot mfi"></span>
-            <span>MFI</span>
-            <span class="ind-toggle-icon" id="icon-mfi-state"></span>
-          </button>
-
-          <button class="ind-pill msi" id="btn-toggle-msi" title="Toggle Market Strength Indicator (Momentum & Vol Flow)">
-            <span class="ind-dot msi"></span>
-            <span>MSI</span>
-            <span class="ind-toggle-icon" id="icon-msi-state"></span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Navigation Right: Utilities & Style -->
-      <div class="nav-right">
-        <!-- Oscillator Mode Toggle -->
-        <button class="pill-btn osc-mode-btn" id="btn-osc-mode" title="Switch Indicator Layout (Sub-Panes Below Chart vs Overlay)">
-          <span class="osc-mode-icon">◫</span>
-          <span id="osc-mode-text">Separate Panes</span>
-        </button>
-
-        <!-- Chart Type Select -->
-        <select class="chart-type-select" id="chart-type-select" title="Change Chart Type">
-          <option value="candlestick" selected>Candles</option>
-          <option value="line">Line</option>
-          <option value="area">Area</option>
-        </select>
-
-        <!-- Indicator Info / Education Modal -->
-        <button class="icon-btn" id="btn-indicator-info" title="Technical Indicator Strategy Guide" aria-label="Indicator info">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-        </button>
-
-        <!-- Fit Chart -->
-        <button class="icon-btn" id="btn-fit-chart" title="Reset View / Fit Content" aria-label="Fit chart">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-        </button>
-
-        <!-- Screenshot Download -->
-        <button class="icon-btn" id="btn-screenshot" title="Save Chart Image" aria-label="Download chart screenshot">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
-        </button>
-
-        <!-- Toggle Watchlist Sidebar -->
-        <button class="icon-btn" id="btn-toggle-watchlist" title="Toggle Watchlist Sidebar" aria-label="Toggle watchlist">
+        <!-- Mobile Quick Watchlist Trigger -->
+        <button class="icon-btn nav-mobile-wl-btn" id="btn-toggle-watchlist-mobile" title="Watchlist" aria-label="Toggle watchlist">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M15 3v18"/></svg>
         </button>
+      </div>
+
+      <!-- Navigation Controls Row: Touch-Scrollable on Mobile -->
+      <div class="nav-controls-row">
+        <!-- Navigation Center: Timeframe & Indicators -->
+        <div class="nav-center">
+          <!-- Timeframe Segmented Control (Daily default, Weekly, Monthly) -->
+          <div class="timeframe-group" role="group" aria-label="Timeframe selection">
+            <button class="tf-btn active" data-tf="1D" id="tf-1d" title="Daily Timeframe (Default)">1D</button>
+            <button class="tf-btn" data-tf="1W" id="tf-1w" title="Weekly Timeframe">1W</button>
+            <button class="tf-btn" data-tf="1M" id="tf-1m" title="Monthly Timeframe">1M</button>
+          </div>
+
+          <!-- Indicator Toggle Badges -->
+          <div class="indicators-toolbar" role="group" aria-label="Indicator toggles">
+            <!-- Trend Overlays Group -->
+            <button class="ind-pill ema50 active" id="btn-toggle-ema50" title="Toggle 50 Exponential Moving Average">
+              <span class="ind-dot ema50"></span>
+              <span>50 EMA</span>
+              <span class="ind-toggle-icon" id="icon-ema50-state"></span>
+            </button>
+
+            <button class="ind-pill ema200 active" id="btn-toggle-ema200" title="Toggle 200 Exponential Moving Average">
+              <span class="ind-dot ema200"></span>
+              <span>200 EMA</span>
+              <span class="ind-toggle-icon" id="icon-ema200-state"></span>
+            </button>
+
+            <button class="ind-pill vwap active" id="btn-toggle-vwap" title="Toggle 1-Year Rolling Volume-Weighted Average Price">
+              <span class="ind-dot vwap"></span>
+              <span>1Y VWAP</span>
+              <span class="ind-toggle-icon" id="icon-vwap-state"></span>
+            </button>
+
+            <div class="toolbar-divider" title="Oscillators"></div>
+
+            <!-- Oscillators Sub-Pane Group -->
+            <button class="ind-pill rsi active" id="btn-toggle-rsi" title="Toggle Relative Strength Index (14)">
+              <span class="ind-dot rsi"></span>
+              <span>RSI</span>
+              <span class="ind-toggle-icon" id="icon-rsi-state"></span>
+            </button>
+
+            <button class="ind-pill adx active" id="btn-toggle-adx" title="Toggle Average Directional Index (14)">
+              <span class="ind-dot adx"></span>
+              <span>ADX</span>
+              <span class="ind-toggle-icon" id="icon-adx-state"></span>
+            </button>
+
+            <button class="ind-pill mfi" id="btn-toggle-mfi" title="Toggle Money Flow Index (14)">
+              <span class="ind-dot mfi"></span>
+              <span>MFI</span>
+              <span class="ind-toggle-icon" id="icon-mfi-state"></span>
+            </button>
+
+            <button class="ind-pill msi" id="btn-toggle-msi" title="Toggle Market Strength Indicator (Momentum & Vol Flow)">
+              <span class="ind-dot msi"></span>
+              <span>MSI</span>
+              <span class="ind-toggle-icon" id="icon-msi-state"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Navigation Right: Utilities & Style -->
+        <div class="nav-right">
+          <!-- Oscillator Mode Toggle -->
+          <button class="pill-btn osc-mode-btn" id="btn-osc-mode" title="Switch Indicator Layout (Sub-Panes Below Chart vs Overlay)">
+            <span class="osc-mode-icon">◫</span>
+            <span id="osc-mode-text">Separate Panes</span>
+          </button>
+
+          <!-- Chart Type Select -->
+          <select class="chart-type-select" id="chart-type-select" title="Change Chart Type">
+            <option value="candlestick" selected>Candles</option>
+            <option value="line">Line</option>
+            <option value="area">Area</option>
+          </select>
+
+          <!-- Indicator Info / Education Modal -->
+          <button class="icon-btn" id="btn-indicator-info" title="Technical Indicator Strategy Guide" aria-label="Indicator info">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          </button>
+
+          <!-- Fit Chart -->
+          <button class="icon-btn" id="btn-fit-chart" title="Reset View / Fit Content" aria-label="Fit chart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+          </button>
+
+          <!-- Screenshot Download -->
+          <button class="icon-btn" id="btn-screenshot" title="Save Chart Image" aria-label="Download chart screenshot">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+          </button>
+
+          <!-- Toggle Watchlist Sidebar (Desktop) -->
+          <button class="icon-btn nav-desktop-wl-btn" id="btn-toggle-watchlist" title="Toggle Watchlist Sidebar" aria-label="Toggle watchlist">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M15 3v18"/></svg>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -204,12 +212,15 @@
       <aside class="watchlist-sidebar" id="watchlist-sidebar">
         <div class="watchlist-header">
           <h3>Market Watch</h3>
-          <span style="font-size: 11px; color: #64748b;">Instant Open</span>
+          <button class="icon-btn close-wl-btn" id="btn-close-watchlist" aria-label="Close watchlist" title="Close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
         </div>
         <ul class="watchlist-list" id="watchlist-list">
           <!-- Populated dynamically -->
         </ul>
       </aside>
+      <div class="watchlist-backdrop" id="watchlist-backdrop"></div>
     </main>
 
     <!-- Global Search Modal / Command Palette -->

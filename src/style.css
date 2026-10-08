@@ -53,6 +53,7 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-main);
   height: 100vh;
+  height: 100dvh;
   width: 100vw;
   overflow: hidden;
   display: flex;
@@ -65,6 +66,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   width: 100vw;
   background: radial-gradient(circle at 50% 0%, #111a2f 0%, #070a11 65%);
 }
@@ -81,6 +83,26 @@ body {
   padding: 0 18px;
   gap: 16px;
   z-index: 20;
+}
+
+.nav-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  gap: 16px;
+}
+
+.nav-mobile-wl-btn {
+  display: none;
+}
+
+.close-wl-btn {
+  display: none;
+}
+
+.watchlist-backdrop {
+  display: none;
 }
 
 .nav-left {
@@ -1105,9 +1127,438 @@ body {
   color: #94a3b8;
 }
 
-/* Responsive adjustments */
-@media (max-width: 900px) {
+/* ==================== Mobile & Responsive System ==================== */
+@media (max-width: 1024px) {
   .search-trigger-btn { width: 220px; }
-  .market-stats-row { display: none; }
-  .watchlist-sidebar { display: none; }
+  .market-strip { padding: 8px 14px; }
+  .market-stats-row { gap: 14px; }
+}
+
+@media (max-width: 768px) {
+  /* Dynamic Viewport for mobile address bars */
+  body, #app {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  /* Two-tier Compact Header */
+  .top-nav {
+    height: auto;
+    min-height: unset;
+    padding: 8px 10px 6px 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 7px;
+  }
+
+  /* Row 1: Brand + Search Button + Mobile Watchlist Toggle */
+  .nav-left {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .brand-badge {
+    gap: 7px;
+    flex-shrink: 0;
+  }
+
+  .brand-logo-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .brand-logo-icon svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .brand-title {
+    font-size: 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .brand-tag {
+    display: none;
+  }
+
+  .search-trigger-btn {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    max-width: none;
+    padding: 6px 10px;
+    gap: 7px;
+    font-size: 12px;
+  }
+
+  .search-trigger-btn svg {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+  }
+
+  .search-trigger-btn kbd {
+    display: none;
+  }
+
+  .nav-mobile-wl-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+  }
+
+  .nav-desktop-wl-btn {
+    display: none !important;
+  }
+
+  /* Row 2: Touch-Scrollable Controls Ribbon */
+  .nav-controls-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 2px 0 3px 0;
+  }
+
+  .nav-controls-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-center {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-right {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .timeframe-group {
+    flex-shrink: 0;
+    padding: 2px;
+  }
+
+  .tf-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .indicators-toolbar {
+    flex-shrink: 0;
+    gap: 5px;
+  }
+
+  .ind-pill {
+    padding: 4px 8px;
+    font-size: 11px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .toolbar-divider {
+    height: 16px;
+    margin: 0 2px;
+  }
+
+  .osc-mode-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  .chart-type-select {
+    padding: 4px 6px;
+    font-size: 11px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  .icon-btn {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+  }
+
+  /* Compact Market Overview Strip */
+  .market-strip {
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .market-info-primary {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .symbol-name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .symbol-ticker {
+    font-size: 17px;
+  }
+
+  .symbol-fullname {
+    font-size: 12px;
+    max-width: 110px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .market-badge {
+    font-size: 10px;
+    padding: 2px 5px;
+  }
+
+  .price-display-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .current-price {
+    font-size: 18px;
+  }
+
+  .change-pill {
+    font-size: 11px;
+    padding: 2px 6px;
+  }
+
+  .market-stats-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .market-stats-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stat-item {
+    flex-shrink: 0;
+    gap: 2px;
+  }
+
+  .stat-label {
+    font-size: 9px;
+  }
+
+  .stat-val {
+    font-size: 11px;
+  }
+
+  /* Chart Viewport & Minimal HUD */
+  .chart-hud {
+    top: 6px;
+    left: 6px;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    max-width: calc(100vw - 12px);
+    overflow-x: auto;
+    scrollbar-width: none;
+    backdrop-filter: blur(8px);
+  }
+
+  .chart-hud::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hud-row-primary {
+    font-size: 10px;
+    gap: 6px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  .hud-row-indicators {
+    font-size: 9px;
+    gap: 6px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  .hud-row-oscillators {
+    display: none !important;
+  }
+
+  /* Watchlist Sidebar as Mobile Slide-Over Drawer */
+  .watchlist-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 280px !important;
+    max-width: 85vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: 200 !important;
+    background: #0c101c !important;
+    border-left: 1px solid var(--border-light) !important;
+    box-shadow: -12px 0 40px rgba(0, 0, 0, 0.85) !important;
+    transform: translateX(0) !important;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .watchlist-sidebar.collapsed {
+    transform: translateX(100%) !important;
+  }
+
+  .close-wl-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .watchlist-backdrop {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    background: rgba(0, 0, 0, 0.65) !important;
+    backdrop-filter: blur(4px) !important;
+    z-index: 190 !important;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease !important;
+  }
+
+  .watchlist-backdrop.show {
+    display: block !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Mobile Search Modal */
+  .search-modal-backdrop {
+    padding: 10px !important;
+    align-items: flex-start !important;
+  }
+
+  .search-modal-box {
+    width: 100% !important;
+    max-height: 88vh !important;
+    max-height: 88dvh !important;
+    border-radius: var(--radius-lg) !important;
+  }
+
+  .search-input-header {
+    padding: 11px 13px !important;
+  }
+
+  .search-modal-input {
+    font-size: 16px !important; /* Prevents auto zoom in iOS Safari */
+  }
+
+  .modal-category-tabs {
+    padding: 7px 10px !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+  }
+
+  .modal-category-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cat-tab-btn {
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .search-results-list {
+    max-height: 52vh !important;
+    padding: 4px !important;
+  }
+
+  .search-item {
+    padding: 9px 10px !important;
+    min-height: 48px !important;
+  }
+
+  .search-sym-badge {
+    min-width: 50px !important;
+    font-size: 10px !important;
+    padding: 2px 5px !important;
+  }
+
+  .search-sym-title {
+    font-size: 13px !important;
+  }
+
+  .search-sym-name {
+    font-size: 11px !important;
+    max-width: 140px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .search-exchange-tag {
+    font-size: 10px !important;
+  }
+
+  .search-modal-footer .search-shortcuts {
+    display: none !important;
+  }
+
+  .search-modal-footer {
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .symbol-ticker {
+    font-size: 16px;
+  }
+
+  .current-price {
+    font-size: 17px;
+  }
+
+  .symbol-fullname {
+    max-width: 80px;
+  }
 }

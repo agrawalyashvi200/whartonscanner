@@ -111,6 +111,9 @@ function initElements() {
   elements.watchlistSidebar = document.getElementById('watchlist-sidebar');
   elements.watchlistList = document.getElementById('watchlist-list');
   elements.btnToggleWatchlist = document.getElementById('btn-toggle-watchlist');
+  elements.btnToggleWatchlistMobile = document.getElementById('btn-toggle-watchlist-mobile');
+  elements.btnCloseWatchlist = document.getElementById('btn-close-watchlist');
+  elements.watchlistBackdrop = document.getElementById('watchlist-backdrop');
   elements.chartTypeSelect = document.getElementById('chart-type-select');
   elements.btnFitChart = document.getElementById('btn-fit-chart');
   elements.btnScreenshot = document.getElementById('btn-screenshot');
@@ -426,6 +429,11 @@ function initWatchlist() {
 
     li.addEventListener('click', () => {
       loadMarketData(item, state.currentTimeframe);
+      if (window.innerWidth <= 768) {
+        state.isWatchlistOpen = false;
+        elements.watchlistSidebar.classList.add('collapsed');
+        if (elements.watchlistBackdrop) elements.watchlistBackdrop.classList.remove('show');
+      }
     });
 
     elements.watchlistList.appendChild(li);
@@ -719,10 +727,29 @@ function setupEventListeners() {
     showToast('Chart screenshot saved to Downloads!');
   });
 
-  // Watchlist Sidebar Toggle
-  elements.btnToggleWatchlist.addEventListener('click', () => {
-    state.isWatchlistOpen = !state.isWatchlistOpen;
+  // Watchlist Sidebar Toggle (Desktop, Mobile & Backdrop)
+  const setWatchlistOpen = (open) => {
+    state.isWatchlistOpen = open;
     elements.watchlistSidebar.classList.toggle('collapsed', !state.isWatchlistOpen);
+    if (elements.watchlistBackdrop) {
+      elements.watchlistBackdrop.classList.toggle('show', state.isWatchlistOpen && window.innerWidth <= 768);
+    }
+  };
+
+  elements.btnToggleWatchlist?.addEventListener('click', () => {
+    setWatchlistOpen(!state.isWatchlistOpen);
+  });
+
+  elements.btnToggleWatchlistMobile?.addEventListener('click', () => {
+    setWatchlistOpen(!state.isWatchlistOpen);
+  });
+
+  elements.btnCloseWatchlist?.addEventListener('click', () => {
+    setWatchlistOpen(false);
+  });
+
+  elements.watchlistBackdrop?.addEventListener('click', () => {
+    setWatchlistOpen(false);
   });
 
   // Indicator Info Modal
@@ -744,6 +771,12 @@ function setupEventListeners() {
 // Bootstrap Application
 function initApp() {
   initElements();
+
+  // On mobile screens, collapse watchlist by default
+  if (window.innerWidth <= 768) {
+    state.isWatchlistOpen = false;
+    elements.watchlistSidebar.classList.add('collapsed');
+  }
 
   chartManager = new ChartManager(elements.chartContainer, (crosshairData) => {
     updateHUD(crosshairData);
